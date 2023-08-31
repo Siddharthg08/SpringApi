@@ -1,7 +1,5 @@
-package com.example.booksAndAuthors1.controllers;
+package com.example.booksAndAuthors1.Service;
 
-import com.example.booksAndAuthors1.Service.AuthorService;
-import com.example.booksAndAuthors1.Service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,32 +14,29 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/books")
-public class BookController {
+public class BookService {
     @Autowired
-    private BookService bookService;
+    private BookRepository bookRepository;
     @Autowired
-    private AuthorService authorService;
+    private AuthorRepository authorRepository;
 
-    @GetMapping("/")
     public List<Book> getAllBooks() {
 //    	System.out.println("Hi");
-        return bookService.getAllBooks();
+        return bookRepository.findAll();
     }
 
-    @GetMapping("/genre")
     public List<Book> getBooksByGenre(@RequestParam String genre) {
 //    	System.out.println("Hey");
-        return bookService.getBooksByGenre(genre);
+        return bookRepository.findByGenre(genre);
     }
 
-    
-    @GetMapping("/genreAndCopies")
+
     public List<Book> getBooksByGenreAndCopiesAvailable(@RequestParam String genre, @RequestParam int copies) {
-        return bookService.getBooksByGenreAndCopiesAvailable(genre, copies);
+        return bookRepository.findByGenreAndCopiesAvailableGreaterThan(genre, copies);
     }
 
-    @PostMapping("/add")
     public ResponseEntity<Book> saveBook(@Valid @RequestBody Book book) {
-        return bookService.saveBook(book);
+        Book savedBook = bookRepository.save(book);
+        return new ResponseEntity<>(savedBook, HttpStatus.CREATED);
     }
 }

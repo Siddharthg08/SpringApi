@@ -2,6 +2,8 @@ package com.example.booksAndAuthors1.controllers;
 
 import java.util.List;
 
+import com.example.booksAndAuthors1.Service.AuthorService;
+import com.example.booksAndAuthors1.Service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,26 +16,21 @@ import com.example.booksAndAuthors1.repositories.BookRepository;
 @RequestMapping("/api/authors")
 public class AuthorController {
     @Autowired
-    private AuthorRepository authorRepository;
-    
+    AuthorService authorService;
     @Autowired
-    private BookRepository bookRepository;
-
+    BookService bookService;
     @PostMapping("/add")
     public Author saveAuthor(@RequestBody Author author) {
-        return authorRepository.save(author);
+        return authorService.saveAuthor(author);
     }
     @GetMapping("/author")
     public List<Book> getBooksByAuthor(@RequestParam String name){
-    	System.out.println("Hi");
-    	Author author = authorRepository.findByName(name);
-    	String id = author.getId();
-    	return bookRepository.findByAuthorId(id);
+        return authorService.getBooksByAuthor(name);
     }
 
     @GetMapping("/get")
     public List<Author> getAuthorsByNameRegex(@RequestParam String namesRegex) {
-        return authorRepository.findByNameRegex(namesRegex);
+        return authorService.getAuthorsByNameRegex(namesRegex);
     }
     
 }
